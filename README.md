@@ -27,6 +27,8 @@ bundle add tsrs
 
 Anywhere a precompiled gem is not published, the gem builds from source and needs the [Rust toolchain](https://rustup.rs). tsrs needs a recent Rust, 1.99.1 at the moment. `rust/rust-toolchain.toml` pins it, so rustup installs it for the build.
 
+tsrs only runs on 64-bit platforms, so the gem doesn't support 32-bit ARM or x86.
+
 ### Versioning
 
 The gem carries the version of tsrs it packages. Gem v0.18.0 bundles tsrs v0.18.0. `Tsrs.tsrs_version` reports what a given build was compiled against, and `Tsrs.typescript_version` reports the TypeScript version that tsrs release is a port of.

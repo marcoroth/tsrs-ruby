@@ -10,8 +10,6 @@ begin
   PLATFORMS = [
     "aarch64-linux-gnu",
     "aarch64-linux-musl",
-    "arm-linux-gnu",
-    "arm-linux-musl",
     "arm64-darwin",
     "x86_64-darwin",
     "x86_64-linux-gnu",
@@ -21,8 +19,6 @@ begin
   RB_SYS_PLATFORM_MAP = {
     "aarch64-linux-gnu" => "aarch64-linux",
     "aarch64-linux-musl" => "aarch64-linux-musl",
-    "arm-linux-gnu" => "arm-linux",
-    "arm-linux-musl" => "arm-linux-musl",
     "arm64-darwin" => "arm64-darwin",
     "x86_64-darwin" => "x86_64-darwin",
     "x86_64-linux-gnu" => "x86_64-linux",
@@ -32,14 +28,10 @@ begin
   RUST_TARGETS = {
     "aarch64-linux-gnu" => "aarch64-unknown-linux-gnu",
     "aarch64-linux-musl" => "aarch64-unknown-linux-musl",
-    "arm-linux-gnu" => "armv7-unknown-linux-gnueabihf",
-    "arm-linux-musl" => "armv7-unknown-linux-musleabihf",
     "arm64-darwin" => "aarch64-apple-darwin",
     "x86_64-darwin" => "x86_64-apple-darwin",
     "x86_64-linux-gnu" => "x86_64-unknown-linux-gnu",
     "x86_64-linux-musl" => "x86_64-unknown-linux-musl",
-    "x86-linux-gnu" => "i686-unknown-linux-gnu",
-    "x86-linux-musl" => "i686-unknown-linux-musl",
   }.freeze
 
   Rake::ExtensionTask.new do |ext|
@@ -89,10 +81,6 @@ begin
                        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc"
                      when /aarch64.*linux.*musl/
                        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-musl-gcc"
-                     when /armv7.*gnueabihf/
-                       "CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc"
-                     when /armv7.*musleabihf/
-                       "CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABIHF_LINKER=arm-linux-musleabihf-gcc"
                      else
                        ""
                      end
