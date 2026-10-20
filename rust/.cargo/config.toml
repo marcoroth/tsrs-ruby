@@ -1,0 +1,5 @@
+[env]
+# The TypeScript version tsrs's release builds stamp (`nightly` in [workspace.metadata.typescript] of tsrs's
+# Cargo.toml), so tsbuildinfo files and typesVersions matching agree with the tsrs npm package.
+# See .github/workflows/upstream.yml.
+TSRS_TS_VERSION = "7.1.0-dev.20260930.4"

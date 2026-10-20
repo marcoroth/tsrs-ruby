@@ -1,0 +1,66 @@
+# Generated from lib/tsrs/diagnostic.rb with RBS::Inline
+
+module Tsrs
+  # Lines and columns are 1-based. `start` and `finish` are offsets in UTF-16 code units, as TypeScript counts.
+  class Diagnostic
+    CATEGORIES: Array[Symbol]
+
+    attr_reader code: Integer
+
+    attr_reader category: Symbol
+
+    attr_reader message: String
+
+    attr_reader file: String?
+
+    attr_reader line: Integer?
+
+    attr_reader column: Integer?
+
+    attr_reader end_line: Integer?
+
+    attr_reader end_column: Integer?
+
+    attr_reader start: Integer?
+
+    attr_reader finish: Integer?
+
+    attr_reader source: String?
+
+    attr_reader message_chain: Array[Tsrs::Diagnostic]
+
+    attr_reader related_information: Array[Tsrs::Diagnostic]
+
+    # : (Hash[String, untyped]) -> Tsrs::Diagnostic
+    def self.from_hash: (Hash[String, untyped]) -> Tsrs::Diagnostic
+
+    # : (untyped) -> Integer?
+    def self.offset: (untyped) -> Integer?
+
+    # : (code: Integer, category: Symbol, message: String, ?file: String?, ?line: Integer?, ?column: Integer?, ?end_line: Integer?, ?end_column: Integer?, ?start: Integer?, ?finish: Integer?, ?source: String?, ?message_chain: Array[Tsrs::Diagnostic], ?related_information: Array[Tsrs::Diagnostic]) -> void
+    def initialize: (code: Integer, category: Symbol, message: String, ?file: String?, ?line: Integer?, ?column: Integer?, ?end_line: Integer?, ?end_column: Integer?, ?start: Integer?, ?finish: Integer?, ?source: String?, ?message_chain: Array[Tsrs::Diagnostic], ?related_information: Array[Tsrs::Diagnostic]) -> void
+
+    # : () -> bool
+    def error?: () -> bool
+
+    # : () -> bool
+    def warning?: () -> bool
+
+    # : () -> String
+    def location: () -> String
+
+    # : () -> String
+    def full_message: () -> String
+
+    # : () -> String
+    def to_s: () -> String
+
+    # : () -> String
+    def inspect: () -> String
+
+    private
+
+    # : (Array[Tsrs::Diagnostic], Integer) -> Array[String]
+    def chain_lines: (Array[Tsrs::Diagnostic], Integer) -> Array[String]
+  end
+end

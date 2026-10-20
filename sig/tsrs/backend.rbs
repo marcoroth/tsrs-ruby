@@ -1,0 +1,44 @@
+# Generated from lib/tsrs/backend.rb with RBS::Inline
+
+module Tsrs
+  module Backend
+    module Unavailable
+      # : (String, String) -> String
+      def transpile: (String, String) -> String
+
+      # : (String, String) -> String
+      def transpile_declaration: (String, String) -> String
+
+      # : (String) -> String
+      def check: (String) -> String
+
+      # : (String) -> untyped
+      def session_new: (String) -> untyped
+
+      # : (untyped, String) -> String
+      def session_check: (untyped, String) -> String
+
+      # : (untyped) -> nil
+      def session_close: (untyped) -> nil
+
+      # : () -> String
+      def panic_for_test: () -> String
+
+      # : () -> String
+      def version: () -> String
+
+      # : () -> String
+      def tsrs_version: () -> String
+
+      # : () -> String
+      def typescript_version: () -> String
+
+      private
+
+      # : (Symbol?) -> bot
+      def unavailable: (Symbol?) -> bot
+    end
+
+    extend Unavailable
+  end
+end

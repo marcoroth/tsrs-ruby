@@ -1,0 +1,33 @@
+/.bundle/
+/tmp/
+/pkg/
+/vendor/bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/spec/reports/
+
+# Types
+/.gem_rbs_collection/
+/.steep/
+
+# Rust
+/rust/target/
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.bundle
+*.dSYM/
+
+/ext/tsrs/include/tsrs.h
+/ext/tsrs/Makefile
+/ext/tsrs/mkmf.log
+/lib/tsrs/tsrs.bundle
+/lib/tsrs/tsrs.so
+
+# Built gems
+*.gem

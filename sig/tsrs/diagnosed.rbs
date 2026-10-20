@@ -1,0 +1,15 @@
+# Generated from lib/tsrs/diagnosed.rb with RBS::Inline
+
+module Tsrs
+  # @rbs module-self _Diagnosed
+  module Diagnosed : _Diagnosed
+    # : () -> Array[Tsrs::Diagnostic]
+    def errors: () -> Array[Tsrs::Diagnostic]
+
+    # : () -> Array[Tsrs::Diagnostic]
+    def warnings: () -> Array[Tsrs::Diagnostic]
+
+    # : () -> bool
+    def errors?: () -> bool
+  end
+end

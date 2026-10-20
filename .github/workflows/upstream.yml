@@ -1,0 +1,262 @@
+name: Upstream
+
+concurrency:
+  group: upstream
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      tsrs_version:
+        description: "tsrs version to bump to (e.g. 0.18.0). Leave blank to auto-detect the latest GitHub release of oxc-project/tsrs."
+        required: false
+        type: string
+      gem_version:
+        description: "Gem version to release. Leave blank to match the tsrs version. Use a fourth digit (e.g. 0.18.0.1) to re-release the same tsrs version."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: oxc-project/tsrs
+
+jobs:
+  bump:
+    name: Detect and PR a new tsrs release
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+
+      # tsrs does not publish its crates, so the gem builds them from the release tag. Besides the tag, a release
+      # pins the Rust version tsrs needs and the TypeScript version its release builds stamp.
+      - name: Determine tsrs version
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.tsrs_version }}
+          INPUT_GEM_VERSION: ${{ inputs.gem_version }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            upstream_version="${INPUT_VERSION#v}"
+          else
+            upstream_version=$(gh api "repos/${UPSTREAM_REPOSITORY}/releases/latest" --jq '.tag_name')
+            upstream_version="${upstream_version#v}"
+          fi
+
+          if [[ ! "${upstream_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::${upstream_version} is not a tsrs release of the form X.Y.Z"
+            exit 1
+          fi
+
+          upstream_file() {
+            gh api "repos/${UPSTREAM_REPOSITORY}/contents/$1?ref=v${upstream_version}" --jq '.content' | base64 -d
+          }
+
+          manifest=$(upstream_file Cargo.toml)
+
+          workspace_version=$(echo "${manifest}" | awk '/^\[workspace.package\]/{p=1} p && /^version = /{gsub(/version = |"/, ""); print; exit}')
+          typescript_version=$(echo "${manifest}" | awk '/^\[workspace.metadata.typescript\]/{p=1} p && /^nightly = /{gsub(/nightly = |"/, ""); print; exit}')
+          rust_version=$(upstream_file rust-toolchain.toml | sed -n -E 's/^channel = "(.*)"$/\1/p')
+
+          if [[ "${workspace_version}" != "${upstream_version}" ]]; then
+            echo "::error::tsrs v${upstream_version} has workspace version ${workspace_version}"
+            exit 1
+          fi
+
+          if [[ -z "${typescript_version}" || -z "${rust_version}" ]]; then
+            echo "::error::could not read the TypeScript or Rust version at v${upstream_version}"
+            exit 1
+          fi
+
+          current_version=$(grep -E '^tsrs_api = ' rust/Cargo.toml | sed -E 's/.*tag = "v([^"]+)".*/\1/')
+          current_gem_version=$(sed -n -E 's/^  VERSION = "(.*)"$/\1/p' lib/tsrs/version.rb)
+          current_release=$(echo "${current_gem_version}" | cut -d. -f1-3)
+
+          # A re-release such as 0.18.0.1 still packages tsrs 0.18.0, so it is kept rather than
+          # replaced by the release it was cut from.
+          if [[ -n "${INPUT_GEM_VERSION}" ]]; then
+            gem_version="${INPUT_GEM_VERSION}"
+          elif [[ "${current_release}" == "${upstream_version}" ]]; then
+            gem_version="${current_gem_version}"
+          else
+            gem_version="${upstream_version}"
+          fi
+
+          if [[ ! "${gem_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::gem version ${gem_version} is not of the form X.Y.Z or X.Y.Z.N"
+            exit 1
+          fi
+
+          echo "upstream_version=${upstream_version}" >> "$GITHUB_OUTPUT"
+          echo "typescript_version=${typescript_version}" >> "$GITHUB_OUTPUT"
+          echo "rust_version=${rust_version}" >> "$GITHUB_OUTPUT"
+          echo "current_version=${current_version}" >> "$GITHUB_OUTPUT"
+          echo "gem_version=${gem_version}" >> "$GITHUB_OUTPUT"
+          echo "current_gem_version=${current_gem_version}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${upstream_version}" == "${current_version}" && "${gem_version}" == "${current_gem_version}" ]]; then
+            echo "Already up to date (tsrs ${current_version}, gem ${current_gem_version})"
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New release: tsrs ${current_version} -> ${upstream_version}, gem ${current_gem_version} -> ${gem_version}"
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for an existing PR
+        if: steps.upstream.outputs.needed == 'true'
+        id: existing_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GEM_VERSION: ${{ steps.upstream.outputs.gem_version }}
+        run: |
+          set -euo pipefail
+
+          pr=$(gh pr list --head "bot-dep-tsrs-${GEM_VERSION}" --json number --jq '.[0].number // empty')
+
+          if [[ -n "${pr}" ]]; then
+            echo "PR #${pr} already exists for ${GEM_VERSION}"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Rust
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ steps.upstream.outputs.rust_version }}
+          cache-workspaces: rust
+
+      - name: Set up Ruby
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Bump tsrs and the gem version
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        env:
+          UPSTREAM_VERSION: ${{ steps.upstream.outputs.upstream_version }}
+          TYPESCRIPT_VERSION: ${{ steps.upstream.outputs.typescript_version }}
+          RUST_VERSION: ${{ steps.upstream.outputs.rust_version }}
+          GEM_VERSION: ${{ steps.upstream.outputs.gem_version }}
+        run: |
+          set -euo pipefail
+
+          sed -E -i "s|(git = \"https://github.com/oxc-project/tsrs\", tag = )\"v[^\"]+\"|\1\"v${UPSTREAM_VERSION}\"|" rust/Cargo.toml
+          sed -E -i "s|^TSRS_TS_VERSION = \".*\"|TSRS_TS_VERSION = \"${TYPESCRIPT_VERSION}\"|" rust/.cargo/config.toml
+          sed -E -i "s|^channel = \".*\"|channel = \"${RUST_VERSION}\"|" rust/rust-toolchain.toml
+
+          sed -E -i "s|^  VERSION = \".*\"|  VERSION = \"${GEM_VERSION}\"|" lib/tsrs/version.rb
+
+          sed -E -i "s|assert_equal \".*\", Tsrs::VERSION|assert_equal \"${GEM_VERSION}\", Tsrs::VERSION|" test/tsrs_test.rb
+          sed -E -i "s|assert_equal \".*\", Tsrs\.tsrs_version|assert_equal \"${UPSTREAM_VERSION}\", Tsrs.tsrs_version|" test/tsrs_test.rb
+          sed -E -i "s|assert_equal \".*\", Tsrs\.typescript_version|assert_equal \"${TYPESCRIPT_VERSION}\", Tsrs.typescript_version|" test/tsrs_test.rb
+
+          git diff --stat
+
+      - name: Update the lockfiles
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        env:
+          UPSTREAM_VERSION: ${{ steps.upstream.outputs.upstream_version }}
+        run: |
+          set -euo pipefail
+
+          cargo fetch --manifest-path rust/Cargo.toml
+
+          bundle config set --local deployment false
+          bundle config set --local frozen false
+          bundle install
+
+          locked=$(sed -n -E '/^name = "tsrs_api"$/{n;s/^version = "(.*)"$/\1/p;}' rust/Cargo.lock)
+
+          if [[ "${locked}" != "${UPSTREAM_VERSION}" ]]; then
+            echo "::error::rust/Cargo.lock pins tsrs_api ${locked}, expected ${UPSTREAM_VERSION}"
+            exit 1
+          fi
+
+      - name: Build and test against the new version
+        id: verify
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+
+          bundle exec rake test 2>&1 | tee "${RUNNER_TEMP}/verify.log"
+
+      - name: Create pull request
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.TSRS_RUBY_PR_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          CURRENT_VERSION: ${{ steps.upstream.outputs.current_version }}
+          UPSTREAM_VERSION: ${{ steps.upstream.outputs.upstream_version }}
+          CURRENT_GEM_VERSION: ${{ steps.upstream.outputs.current_gem_version }}
+          GEM_VERSION: ${{ steps.upstream.outputs.gem_version }}
+          VERIFIED: ${{ steps.verify.outcome }}
+        run: |
+          set -euo pipefail
+
+          branch="bot-dep-tsrs-${GEM_VERSION}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git switch -c "${branch}"
+          git add rust/Cargo.toml rust/Cargo.lock rust/.cargo/config.toml rust/rust-toolchain.toml lib/tsrs/version.rb test/tsrs_test.rb Gemfile.lock
+          git commit -m "$(printf "Bump tsrs to %s\n\nUpdate the embedded tsrs dependency from %s to %s and release it as\ngem v%s.\n\nhttps://github.com/oxc-project/tsrs/releases/tag/v%s" \
+            "${UPSTREAM_VERSION}" "${CURRENT_VERSION}" "${UPSTREAM_VERSION}" "${GEM_VERSION}" "${UPSTREAM_VERSION}")"
+
+          git push --force -u origin "${branch}"
+
+          body="${RUNNER_TEMP}/pr-body.md"
+
+          {
+            printf 'Update the embedded tsrs dependency from %s to [%s](https://github.com/oxc-project/tsrs/releases/tag/v%s).\n\n' \
+              "${CURRENT_VERSION}" "${UPSTREAM_VERSION}" "${UPSTREAM_VERSION}"
+            printf 'The gem version tracks the tsrs version it packages, so this also bumps the gem from %s to **%s**.\n\n' \
+              "${CURRENT_GEM_VERSION}" "${GEM_VERSION}"
+          } > "${body}"
+
+          if [[ "${VERIFIED}" == "success" ]]; then
+            printf 'The gem was built and tested against the new version before this PR was opened. Merging this does not publish anything, cut a `v%s` release to push the gems.\n' \
+              "${GEM_VERSION}" >> "${body}"
+          else
+            {
+              printf '> [!WARNING]\n'
+              printf '> The gem did not build or test cleanly against this version, so this PR is a draft.\n'
+              printf '> Something upstream changed in a way this gem has to be adapted to.\n\n'
+              printf '<details><summary>Verification output</summary>\n\n```\n'
+              sed -E 's/\x1b\[[0-9;]*[A-Za-z]//g' "${RUNNER_TEMP}/verify.log" | tail -c 8000
+              printf '\n```\n\n</details>\n'
+            } >> "${body}"
+          fi
+
+          printf '\nThis PR was created automatically by the upstream workflow.\n' >> "${body}"
+
+          if [[ "${VERIFIED}" == "success" ]]; then
+            gh pr create --title "Bump tsrs to ${UPSTREAM_VERSION}" --body-file "${body}"
+          else
+            gh pr create --draft --title "Bump tsrs to ${UPSTREAM_VERSION}" --body-file "${body}"
+          fi
+
+      - name: Report the verification result
+        if: steps.upstream.outputs.needed == 'true' && steps.existing_pr.outputs.exists == 'false' && steps.verify.outcome == 'failure'
+        run: |
+          echo "::error::The gem did not build or test cleanly against the new version. A draft PR was opened to fix it in."
+          exit 1

@@ -1,0 +1,33 @@
+# Generated from lib/tsrs/check_result.rb with RBS::Inline
+
+module Tsrs
+  class CheckResult
+    include Diagnosed
+
+    attr_reader status: Integer
+
+    attr_reader exit_status: Symbol
+
+    attr_reader diagnostics: Array[Tsrs::Diagnostic]
+
+    attr_reader output: String
+
+    # : (String) -> Tsrs::CheckResult
+    def self.from_json: (String) -> Tsrs::CheckResult
+
+    # : (status: Integer, exit_status: Symbol, ?output: String, ?diagnostics: Array[Tsrs::Diagnostic]) -> void
+    def initialize: (status: Integer, exit_status: Symbol, ?output: String, ?diagnostics: Array[Tsrs::Diagnostic]) -> void
+
+    # : () -> bool
+    def success?: () -> bool
+
+    # : (?strict: bool) -> self
+    def validate!: (?strict: bool) -> self
+
+    # : () -> String
+    def to_s: () -> String
+
+    # : () -> String
+    def inspect: () -> String
+  end
+end

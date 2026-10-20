@@ -1,0 +1,26 @@
+# Generated from lib/tsrs/session.rb with RBS::Inline
+
+module Tsrs
+  # Unlike Tsrs.check, a session gives a check's memory back. Compiler options come from the tsconfig.json only.
+  class Session
+    attr_reader cwd: String
+
+    # : [T] (?cwd: String) { (Tsrs::Session) -> T } -> T
+    def self.open: [T] (?cwd: String) { (Tsrs::Session) -> T } -> T
+
+    # : (?cwd: String) -> void
+    def initialize: (?cwd: String) -> void
+
+    # : (?String) -> Tsrs::CheckResult
+    def check: (?String) -> Tsrs::CheckResult
+
+    # : () -> void
+    def close: () -> void
+
+    # : () -> bool
+    def closed?: () -> bool
+
+    # : () -> String
+    def inspect: () -> String
+  end
+end

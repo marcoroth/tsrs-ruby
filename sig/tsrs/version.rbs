@@ -1,0 +1,5 @@
+# Generated from lib/tsrs/version.rb with RBS::Inline
+
+module Tsrs
+  VERSION: ::String
+end

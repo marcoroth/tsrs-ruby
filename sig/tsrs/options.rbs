@@ -1,0 +1,19 @@
+# Generated from lib/tsrs/options.rb with RBS::Inline
+
+module Tsrs
+  module Options
+    REFUSED: Hash[String, String]
+
+    # : (Hash[Symbol | String, untyped]) -> Array[String]
+    def self.arguments: (Hash[Symbol | String, untyped]) -> Array[String]
+
+    # : (Symbol | String) -> String
+    def self.option_name: (Symbol | String) -> String
+
+    # : (String) -> void
+    def self.refuse!: (String) -> void
+
+    # : (String, untyped) -> Array[String]
+    def self.flag: (String, untyped) -> Array[String]
+  end
+end

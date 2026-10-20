@@ -1,0 +1,5 @@
+# tsrs requires the Rust version its workspace pins (rust-version in its Cargo.toml).
+[toolchain]
+channel = "1.99.1"
+components = ["clippy", "rustfmt"]
+profile = "minimal"

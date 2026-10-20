@@ -1,0 +1,27 @@
+# Generated from lib/tsrs.rb with RBS::Inline
+
+module Tsrs
+  # : (String, ?file_name: String?, ?report_diagnostics: bool, ?strict: bool, **untyped) -> Tsrs::TranspileResult
+  def self.transpile: (String, ?file_name: String?, ?report_diagnostics: bool, ?strict: bool, **untyped) -> Tsrs::TranspileResult
+
+  # : (String, ?file_name: String?, ?report_diagnostics: bool, ?strict: bool, **untyped) -> Tsrs::TranspileResult
+  def self.transpile_declaration: (String, ?file_name: String?, ?report_diagnostics: bool, ?strict: bool, **untyped) -> Tsrs::TranspileResult
+
+  # : (*String, ?project: String?, ?cwd: String, **untyped) -> Tsrs::CheckResult
+  def self.check: (*String, ?project: String?, ?cwd: String, **untyped) -> Tsrs::CheckResult
+
+  # : (*String, ?project: String?, ?cwd: String, **untyped) -> Tsrs::CheckResult
+  def self.compile: (*String, ?project: String?, ?cwd: String, **untyped) -> Tsrs::CheckResult
+
+  # : (*String, ?cwd: String) -> Tsrs::CheckResult
+  def self.tsc: (*String, ?cwd: String) -> Tsrs::CheckResult
+
+  # : () -> String
+  def self.tsrs_version: () -> String
+
+  # : () -> String
+  def self.typescript_version: () -> String
+
+  # : (String?, bool, Hash[Symbol, untyped]) -> String
+  def self.transpile_request: (String?, bool, Hash[Symbol, untyped]) -> String
+end

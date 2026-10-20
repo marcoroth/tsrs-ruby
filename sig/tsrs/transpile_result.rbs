@@ -1,0 +1,29 @@
+# Generated from lib/tsrs/transpile_result.rb with RBS::Inline
+
+module Tsrs
+  # A transpile ignores imports, so its diagnostics never include type errors.
+  class TranspileResult
+    include Diagnosed
+
+    attr_reader code: String
+
+    attr_reader map: String?
+
+    attr_reader diagnostics: Array[Tsrs::Diagnostic]
+
+    # : (String) -> Tsrs::TranspileResult
+    def self.from_json: (String) -> Tsrs::TranspileResult
+
+    # : (code: String, ?map: String?, ?diagnostics: Array[Tsrs::Diagnostic]) -> void
+    def initialize: (code: String, ?map: String?, ?diagnostics: Array[Tsrs::Diagnostic]) -> void
+
+    # : (?strict: bool) -> self
+    def validate!: (?strict: bool) -> self
+
+    # : () -> String
+    def to_s: () -> String
+
+    # : () -> String
+    def inspect: () -> String
+  end
+end

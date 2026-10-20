@@ -1,0 +1,5 @@
+module Tsrs
+  interface _Diagnosed
+    def diagnostics: () -> Array[Tsrs::Diagnostic]
+  end
+end
