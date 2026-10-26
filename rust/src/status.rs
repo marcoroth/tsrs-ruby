@@ -11,10 +11,10 @@ impl From<ExitStatus> for Status {
   fn from(status: ExitStatus) -> Self {
     let name = match status {
       ExitStatus::Success => "success",
-      ExitStatus::DiagnosticsPresent_OutputsSkipped => "diagnostics_present_outputs_skipped",
-      ExitStatus::DiagnosticsPresent_OutputsGenerated => "diagnostics_present_outputs_generated",
-      ExitStatus::InvalidProject_OutputsSkipped => "invalid_project_outputs_skipped",
-      ExitStatus::ProjectReferenceCycle_OutputsSkipped => "project_reference_cycle_outputs_skipped",
+      ExitStatus::DiagnosticsPresentOutputsSkipped => "diagnostics_present_outputs_skipped",
+      ExitStatus::DiagnosticsPresentOutputsGenerated => "diagnostics_present_outputs_generated",
+      ExitStatus::InvalidProjectOutputsSkipped => "invalid_project_outputs_skipped",
+      ExitStatus::ProjectReferenceCycleOutputsSkipped => "project_reference_cycle_outputs_skipped",
       ExitStatus::NotImplemented => "not_implemented",
     };
 

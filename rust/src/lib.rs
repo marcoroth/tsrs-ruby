@@ -85,7 +85,7 @@ pub unsafe extern "C" fn tsrs_session_check(session: *const TsrsSession, options
   };
 
   let options = options.to_string();
-  let session = session.session();
+  let session = session.retain();
 
   guard(move || worker::run(move || session::check(&session, &options)))
 }
