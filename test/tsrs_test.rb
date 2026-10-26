@@ -4,7 +4,7 @@ require "test_helper"
 
 class TsrsTest < Minitest::Spec
   test "has a version number" do
-    assert_equal "0.18.0", Tsrs::VERSION
+    assert_equal "0.20.0", Tsrs::VERSION
   end
 
   test "the native library was built from the version the gem was" do
@@ -12,7 +12,7 @@ class TsrsTest < Minitest::Spec
   end
 
   test "reports the version of tsrs it was compiled against" do
-    assert_equal "0.18.0", Tsrs.tsrs_version
+    assert_equal "0.20.0", Tsrs.tsrs_version
   end
 
   test "the version it reports is the one Cargo.lock pins" do
@@ -22,7 +22,7 @@ class TsrsTest < Minitest::Spec
   end
 
   test "reports the TypeScript version tsrs release builds stamp" do
-    assert_equal "7.1.0-dev.20260930.4", Tsrs.typescript_version
+    assert_equal "7.1.0-beta", Tsrs.typescript_version
   end
 
   test "tsc reports the same TypeScript version" do

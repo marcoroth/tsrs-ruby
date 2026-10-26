@@ -16,15 +16,15 @@ crate-type = ["cdylib", "staticlib", "rlib"]
 
 # tsrs does not publish its crates, so they come from the release tag. See .github/workflows/upstream.yml.
 [dependencies]
-tsrs_api = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_ast = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_compiler = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_contentmapper = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_core = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_execute = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_project = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_tsoptions = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
-tsrs_vfs = { git = "https://github.com/oxc-project/tsrs", tag = "v0.18.0" }
+tsrs_api = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_ast = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_compiler = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_contentmapper = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_core = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_execute = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_project = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_tsoptions = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
+tsrs_vfs = { git = "https://github.com/oxc-project/tsrs", tag = "v0.20.0" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
