@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::value::RawValue;
 use tsrs_api::{Handler, Response, Session, SessionOptions};
 use tsrs_core::context::{with_checker_lifetime, CheckerLifetime, Context};
-use tsrs_core::json::Value;
+use tsrs_core::json::{JsonMap, Value};
 use tsrs_core::tspath;
 use tsrs_vfs::{bundled, osvfs, FS};
 
@@ -15,6 +15,7 @@ use crate::status::Status;
 
 pub struct TsrsSession {
   session: Arc<Session>,
+  current_directory: String,
 }
 
 #[derive(Deserialize)]
@@ -31,15 +32,19 @@ struct CheckPayload {
 
 pub fn new(cwd: &str) -> TsrsSession {
   let fs: Arc<dyn FS> = Arc::new(bundled::wrap_fs(osvfs::fs()));
+  let current_directory = tspath::normalize_path(cwd);
 
   let session = Session::new(SessionOptions::new(
-    tspath::normalize_path(cwd),
+    current_directory.clone(),
     bundled::default_lib_path(),
     fs,
     false,
   ));
 
-  TsrsSession { session }
+  TsrsSession {
+    session,
+    current_directory,
+  }
 }
 
 impl TsrsSession {
@@ -50,6 +55,7 @@ impl TsrsSession {
   pub fn retain(&self) -> TsrsSession {
     TsrsSession {
       session: self.session(),
+      current_directory: self.current_directory.clone(),
     }
   }
 
@@ -58,16 +64,17 @@ impl TsrsSession {
   }
 }
 
-pub fn check(session: &Session, request_json: &str) -> TsrsResult {
+pub fn check(session: &TsrsSession, request_json: &str) -> TsrsResult {
   let request: CheckRequest = match serde_json::from_str(request_json) {
     Ok(request) => request,
     Err(error) => return TsrsResult::error(TsrsErrorCode::Option, error.to_string()),
   };
 
-  let project = tspath::get_normalized_absolute_path(&request.project, session.current_directory());
+  let project = tspath::get_normalized_absolute_path(&request.project, &session.current_directory);
   let params = object("openProjects", Value::Array(vec![Value::String(project.clone())]));
+  let session = session.session();
 
-  let created = match call(session, "createSnapshot", &params) {
+  let created = match call(&session, "createSnapshot", &params) {
     Ok(created) => created,
     Err(message) => return TsrsResult::error(TsrsErrorCode::Check, message),
   };
@@ -76,9 +83,9 @@ pub fn check(session: &Session, request_json: &str) -> TsrsResult {
     return TsrsResult::error(TsrsErrorCode::Internal, "createSnapshot returned no snapshot");
   };
 
-  let outcome = diagnostics(session, snapshot, &created, &project);
+  let outcome = diagnostics(&session, snapshot, &created, &project);
 
-  let _ = call(session, "release", &object("snapshot", Value::Number(snapshot as f64)));
+  let _ = call(&session, "release", &object("snapshot", Value::Number(snapshot as f64)));
 
   match outcome {
     Ok((status, diagnostics)) => {
@@ -129,7 +136,7 @@ fn diagnostics(
   let status = if all.is_empty() {
     ExitStatus::Success
   } else {
-    ExitStatus::DiagnosticsPresent_OutputsGenerated
+    ExitStatus::DiagnosticsPresentOutputsGenerated
   };
 
   let responses = tsrs_api::diagnostics::diagnostic_responses(&all);
@@ -171,7 +178,7 @@ fn call(session: &Session, method: &str, params: &Value) -> Result<Value, String
 }
 
 fn object(key: &str, value: Value) -> Value {
-  let mut map = tsrs_core::collections::OrderedMap::default();
+  let mut map = JsonMap::default();
 
   map.insert(key.to_string(), value);
 
