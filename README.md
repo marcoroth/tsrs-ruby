@@ -25,15 +25,28 @@ Everything here is tsrs doing the work. For what the options mean and what it ca
 bundle add tsrs
 ```
 
-Anywhere a precompiled gem is not published, the gem builds from source and needs the [Rust toolchain](https://rustup.rs). tsrs needs a recent Rust, 1.99.1 at the moment. `rust/rust-toolchain.toml` pins it, so rustup installs it for the build.
+Anywhere a precompiled gem is not published, the gem builds from source and needs the [Rust toolchain](https://rustup.rs). tsrs needs a recent Rust, which `rust/rust-toolchain.toml` pins, so rustup installs it for the build.
 
 tsrs only runs on 64-bit platforms, so the gem doesn't support 32-bit ARM or x86.
 
 ### Versioning
 
-The gem carries the version of tsrs it packages. Gem v0.18.0 bundles tsrs v0.18.0. `Tsrs.tsrs_version` reports what a given build was compiled against, and `Tsrs.typescript_version` reports the TypeScript version that tsrs release is a port of.
+The gem carries the version of tsrs it packages. tsrs versions are the TypeScript version they port plus a tsrs revision, and the gem writes the revision as a number:
 
-So the version tracks tsrs, not the Ruby API here. If the gem needs releasing again for the same tsrs version, that release adds a fourth digit, as in v0.18.0.1.
+| tsrs | gem |
+| --- | --- |
+| `7.1.0-beta.tsrs5` | `7.1.0.beta.5` |
+| `7.1.0-tsrs1` | `7.1.0.1` |
+
+`Tsrs.tsrs_version` reports the tsrs version a given build was compiled against, and `Tsrs.typescript_version` reports the TypeScript version that tsrs release is a port of.
+
+So the version tracks tsrs, not the Ruby API here. If the gem needs releasing again for the same tsrs version, that release adds another number, as in v7.1.0.beta.5.1.
+
+Versions for a TypeScript beta, like `7.1.0.beta.5`, are prereleases, so Bundler only installs them when asked for by version:
+
+```ruby
+gem "tsrs", "7.1.0.beta.5"
+```
 
 ### Usage
 
@@ -151,7 +164,7 @@ Transpiling gives back all the memory it used, and so does checking with a `Tsrs
 
 The gem is a C extension over a Rust crate. `rust/` builds a static library and generates the C header with [cbindgen](https://github.com/mozilla/cbindgen), `ext/tsrs/` wraps it, and `lib/` is the Ruby API over that.
 
-tsrs doesn't publish its crates, so `rust/Cargo.toml` takes them from the release tag on GitHub. `rust/.cargo/config.toml` stamps the TypeScript version the way tsrs's own release builds do. The upstream workflow keeps the tag, that version, and the Rust toolchain in step with each tsrs release.
+`rust/Cargo.toml` pins tsrs's crates from crates.io to one release. `rust/.cargo/config.toml` stamps the TypeScript version the way tsrs's own release builds do. The upstream workflow keeps the crates, that version, and the Rust toolchain in step with each tsrs release.
 
 ```bash
 bin/setup
