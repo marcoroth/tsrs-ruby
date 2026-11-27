@@ -703,8 +703,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_api"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0da278ce300b09e8575eeb26a4ca6e1105ff6cc1b59b016c4c83d9e68a4dafc3"
 dependencies = [
  "rustc-hash",
  "tsrs_api_codec",
@@ -729,8 +730,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_api_codec"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2d3a5d3bfc1b098e3d43f5b63428e487b6ad298f35fc8ab2c150bc631ac01507"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -740,8 +742,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_api_transport"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b391d018023f94930a22a3c0e4144ae4cf057da7328854745b95007107b1a05d"
 dependencies = [
  "base64",
  "rustc-hash",
@@ -754,8 +757,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_ast"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77cf4f578dfe1027c56da04973a18228c65805da2dc8c9ec196b04008219b5aa"
 dependencies = [
  "bitflags",
  "hashbrown",
@@ -768,8 +772,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_astnav"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "990539b98c85cebde3ccf45d72416db856ca16549dcf9f1f301003e7b0a541b8"
 dependencies = [
  "tsrs_ast",
  "tsrs_core",
@@ -778,8 +783,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_binder"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b26886fa52d44e6dba04390832e5427a73d883057d28e14062a4d8079b9a9c20"
 dependencies = [
  "bitflags",
  "rustc-hash",
@@ -791,8 +797,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_checker"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a16904319e2ba90f4a4b089d35c3c2db9ce0df7730a7040b12d0963cefd70cb"
 dependencies = [
  "bitflags",
  "hashbrown",
@@ -816,8 +823,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_compiler"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "063253b2cc6050e41b6766ce40b1bf311c7e3fbf379b670bb77f471e917e7c46"
 dependencies = [
  "rayon",
  "rustc-hash",
@@ -842,8 +850,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_contentmapper"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41dcb4f22cb1a97462d048d504cd678215858181efcb7bba290b76d4fe7f6850"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -858,8 +867,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_core"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc0bf5d9187cda49e80ea4ca5ffc28d68f77b45dac1f10d4a2caad0062c63dbe"
 dependencies = [
  "dragonbox_ecma",
  "hashbrown",
@@ -876,8 +886,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_declarations"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ee44bb1f14d7bc603d635724f0f80c6dd50aef1d14c41bdb6f991801b9ff0e5"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -893,16 +904,18 @@ dependencies = [
 
 [[package]]
 name = "tsrs_diagnostics"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f066873b05720fc673f9e1e9e7cf157f3be67980bbedcb890f4f86d349f18f95"
 dependencies = [
  "rustc-hash",
 ]
 
 [[package]]
 name = "tsrs_execute"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d3346e4eb8c5bc7defa54c1ef9102c645cd01d7c97bb1ca7a38f16c3b059324"
 dependencies = [
  "libc",
  "rustc-hash",
@@ -920,8 +933,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_fswatch"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ce1c9792d4e645163105dbd6ac880941c4fac848c8a56c101bf38e1dd58919ba"
 dependencies = [
  "libc",
  "rustc-hash",
@@ -930,8 +944,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_incremental"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec631e7335038fc3cb7c7edf3af1cec88a2b44349de717a772db012ec964d738"
 dependencies = [
  "bitflags",
  "rayon",
@@ -951,8 +966,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_ipc"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6da81d8a3ccf994f03cd70b94b25e74e8466f56bd484cb820ba863865e7034c4"
 dependencies = [
  "rustc-hash",
  "tsrs_core",
@@ -960,8 +976,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_ls"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37cbf611e4e6e91065ac8c14a57818670e9aa4b3e697c3b4a802a5665e957fb3"
 dependencies = [
  "bitflags",
  "indexmap",
@@ -989,8 +1006,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_lsproto"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92918d470a6daef4589d60900bf8e0a6c19c8c85c580427991658b765f93a9cc"
 dependencies = [
  "rustc-hash",
  "tsrs_core",
@@ -999,8 +1017,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_module"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c72fea73a4d806b0ced1b00c12f4b805fb9ee2454d097b1c28d528b6b1731272"
 dependencies = [
  "bitflags",
  "hashbrown",
@@ -1013,8 +1032,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_modulespecifiers"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c5e154ad62765cfe12640afcbbde6e6772bb6a954113bfe8065c70f56fefa742"
 dependencies = [
  "regex",
  "rustc-hash",
@@ -1026,8 +1046,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_parser"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaec8e85a5ef086f7bc931c2000c11dad49daa66149a5f869f9b35f2b0c0d6ce"
 dependencies = [
  "bitflags",
  "rustc-hash",
@@ -1039,8 +1060,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_printer"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a6c42946d14fe0ff33a41aafece306849fd8e8dc5a079f374aef278b394b4323"
 dependencies = [
  "bitflags",
  "rustc-hash",
@@ -1052,8 +1074,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_project"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "74470ae048fa8ff9e644cb5d7ecffca2923e5e1e88dace10b353698a23c3fc14"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -1075,8 +1098,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_projectutil"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "058188e09d9d90da5c7ba5e7a8212147b1d64a2a6febb718c56106c74a035c5f"
 dependencies = [
  "rustc-hash",
  "tsrs_core",
@@ -1084,8 +1108,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_pseudochecker"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6886240125bc4d7fbb73e47c1ababcc95e32b3ed3177fbafe56cdfe8cdd491b1"
 dependencies = [
  "tsrs_ast",
  "tsrs_core",
@@ -1093,8 +1118,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_scanner"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "378388acab5505ad72dd798399695f326368af92921cf5ca20e587127d4e7f83"
 dependencies = [
  "bitflags",
  "memchr",
@@ -1106,8 +1132,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_sourcemap"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4056038a1f994e36c16f3e68046bfd238ec71a11e506d381049c433af3241a62"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -1117,8 +1144,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_spanmap"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed091894a85baa85b616451d667cee9861ab44f45213fb84f84e6240ab870b75"
 dependencies = [
  "bitflags",
  "tsrs_core",
@@ -1126,8 +1154,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_transformers"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a853b794fe5c102c78d182b0a7d72ffbddc2229cc247ab9b22e2964c323d8c39"
 dependencies = [
  "bitflags",
  "rustc-hash",
@@ -1142,8 +1171,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_tsoptions"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d82137ea988bba67e9c0c89a7eff2723c3f464d5f17efbe0fa48cb539fbd22fd"
 dependencies = [
  "rustc-hash",
  "tsrs_ast",
@@ -1158,8 +1188,9 @@ dependencies = [
 
 [[package]]
 name = "tsrs_vfs"
-version = "0.25.0"
-source = "git+https://github.com/oxc-project/tsrs?tag=v0.25.0#0f82b670e4ff861840b1315f8610816229e73e3a"
+version = "7.1.0-beta.tsrs2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d1fef3679278b88c203994aa96fc93379d089a98bee4c4acb87d508f2e10ff7"
 dependencies = [
  "bitflags",
  "rayon",

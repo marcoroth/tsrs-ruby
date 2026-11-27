@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       tsrs_version:
-        description: "tsrs version to bump to (e.g. 0.18.0). Leave blank to auto-detect the latest GitHub release of oxc-project/tsrs."
+        description: "tsrs version to bump to (e.g. 7.1.0-beta.tsrs5). Leave blank to auto-detect the latest release on crates.io."
         required: false
         type: string
       gem_version:
-        description: "Gem version to release. Leave blank to match the tsrs version. Use a fourth digit (e.g. 0.18.0.1) to re-release the same tsrs version."
+        description: "Gem version to release. Leave blank to derive it from the tsrs version (7.1.0-beta.tsrs5 is 7.1.0.beta.5). Add a number (e.g. 7.1.0.beta.5.1) to re-release the same tsrs version."
         required: false
         type: string
 
@@ -38,8 +38,9 @@ jobs:
           ref: main
           persist-credentials: false
 
-      # tsrs does not publish its crates, so the gem builds them from the release tag. Besides the tag, a release
-      # pins the Rust version tsrs needs and the TypeScript version its release builds stamp.
+      # tsrs versions are the TypeScript version plus a tsrs revision (7.1.0-beta.tsrs5, 7.1.0-tsrs1). The gem turns
+      # the revision into a number, as in 7.1.0.beta.5 and 7.1.0.1, and adds one more for a re-release of the same tsrs.
+      # Besides the crates, a release pins the Rust version tsrs needs and the TypeScript version its builds stamp.
       - name: Determine tsrs version
         id: upstream
         env:
@@ -49,54 +50,61 @@ jobs:
         run: |
           set -euo pipefail
 
+          crates_io() {
+            curl -sSf "https://crates.io/api/v1/crates/$1" -H "User-Agent: tsrs-ruby upstream workflow"
+          }
+
           if [[ -n "${INPUT_VERSION}" ]]; then
             upstream_version="${INPUT_VERSION#v}"
           else
-            upstream_version=$(gh api "repos/${UPSTREAM_REPOSITORY}/releases/latest" --jq '.tag_name')
-            upstream_version="${upstream_version#v}"
+            upstream_version=$(crates_io tsrs_api | jq -r '.crate.max_version')
           fi
 
-          if [[ ! "${upstream_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::${upstream_version} is not a tsrs release of the form X.Y.Z"
+          if [[ ! "${upstream_version}" =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-([0-9A-Za-z.]+))?[.-]tsrs([1-9][0-9]*)$ ]]; then
+            echo "::error::${upstream_version} is not a tsrs release of the form X.Y.Z[-pre].tsrsN"
             exit 1
           fi
+
+          release_gem_version="${BASH_REMATCH[1]}"
+          if [[ -n "${BASH_REMATCH[3]}" ]]; then
+            release_gem_version="${release_gem_version}.${BASH_REMATCH[3]//-/.}"
+          fi
+          release_gem_version="${release_gem_version}.${BASH_REMATCH[4]}"
+
+          for crate in tsrs_api tsrs_ast tsrs_compiler tsrs_contentmapper tsrs_core tsrs_execute tsrs_project tsrs_tsoptions tsrs_vfs; do
+            if ! crates_io "${crate}/${upstream_version}" > /dev/null; then
+              echo "::error::${crate} ${upstream_version} is not published on crates.io"
+              exit 1
+            fi
+          done
 
           upstream_file() {
             gh api "repos/${UPSTREAM_REPOSITORY}/contents/$1?ref=v${upstream_version}" --jq '.content' | base64 -d
           }
 
-          manifest=$(upstream_file Cargo.toml)
-
-          workspace_version=$(echo "${manifest}" | awk '/^\[workspace.package\]/{p=1} p && /^version = /{gsub(/version = |"/, ""); print; exit}')
-          typescript_version=$(echo "${manifest}" | awk '/^\[workspace.metadata.typescript\]/{p=1} p && /^nightly = /{gsub(/nightly = |"/, ""); print; exit}')
+          typescript_version=$(upstream_file Cargo.toml | awk '/^\[workspace.metadata.typescript\]/{p=1} p && /^nightly = /{gsub(/nightly = |"/, ""); print; exit}')
           rust_version=$(upstream_file rust-toolchain.toml | sed -n -E 's/^channel = "(.*)"$/\1/p')
-
-          if [[ "${workspace_version}" != "${upstream_version}" ]]; then
-            echo "::error::tsrs v${upstream_version} has workspace version ${workspace_version}"
-            exit 1
-          fi
 
           if [[ -z "${typescript_version}" || -z "${rust_version}" ]]; then
             echo "::error::could not read the TypeScript or Rust version at v${upstream_version}"
             exit 1
           fi
 
-          current_version=$(grep -E '^tsrs_api = ' rust/Cargo.toml | sed -E 's/.*tag = "v([^"]+)".*/\1/')
+          current_version=$(grep -E '^tsrs_api = ' rust/Cargo.toml | sed -E 's/^tsrs_api = "=?([^"]+)"$/\1/')
           current_gem_version=$(sed -n -E 's/^  VERSION = "(.*)"$/\1/p' lib/tsrs/version.rb)
-          current_release=$(echo "${current_gem_version}" | cut -d. -f1-3)
 
-          # A re-release such as 0.18.0.1 still packages tsrs 0.18.0, so it is kept rather than
+          # A re-release such as 7.1.0.beta.5.1 still packages the same tsrs, so it is kept rather than
           # replaced by the release it was cut from.
           if [[ -n "${INPUT_GEM_VERSION}" ]]; then
             gem_version="${INPUT_GEM_VERSION}"
-          elif [[ "${current_release}" == "${upstream_version}" ]]; then
+          elif [[ "${current_gem_version}" == "${release_gem_version}" || "${current_gem_version}" == "${release_gem_version}".* ]]; then
             gem_version="${current_gem_version}"
           else
-            gem_version="${upstream_version}"
+            gem_version="${release_gem_version}"
           fi
 
-          if [[ ! "${gem_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
-            echo "::error::gem version ${gem_version} is not of the form X.Y.Z or X.Y.Z.N"
+          if [[ "${gem_version}" != "${release_gem_version}" && ! "${gem_version}" =~ ^${release_gem_version//./\\.}\.[0-9]+$ ]]; then
+            echo "::error::gem version ${gem_version} is not ${release_gem_version} or a re-release of it like ${release_gem_version}.1"
             exit 1
           fi
 
@@ -157,7 +165,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          sed -E -i "s|(git = \"https://github.com/oxc-project/tsrs\", tag = )\"v[^\"]+\"|\1\"v${UPSTREAM_VERSION}\"|" rust/Cargo.toml
+          sed -E -i "s|^(tsrs_[a-z]+) = \"=[^\"]+\"$|\1 = \"=${UPSTREAM_VERSION}\"|" rust/Cargo.toml
           sed -E -i "s|^TSRS_TS_VERSION = \".*\"|TSRS_TS_VERSION = \"${TYPESCRIPT_VERSION}\"|" rust/.cargo/config.toml
           sed -E -i "s|^channel = \".*\"|channel = \"${RUST_VERSION}\"|" rust/rust-toolchain.toml
 
